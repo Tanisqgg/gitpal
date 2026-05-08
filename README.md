@@ -27,6 +27,21 @@ If you ask to push `globals.css` but two changed files share that name, GitPal s
 - "Run in Terminal" only appears on commands GitPal has explicitly marked safe (`git status`, `git add <specific-file>`).
 - Once a new plan is generated, buttons from the previous plan are gone and cannot be re-run.
 
+## Install
+
+1. Download the latest `.vsix` file from [GitHub Releases](https://github.com/Tanisqgg/gitpal/releases)
+2. Open VS Code
+3. Go to Extensions
+4. Click `...`
+5. Choose `Install from VSIX...`
+6. Select the downloaded file
+
+## How to open GitPal
+
+1. Open a Git repo folder in VS Code
+2. Press `Ctrl+Shift+P`
+3. Run `GitPal: Open`
+
 ## Usage
 
 1. Open the GitPal panel from the activity bar (the GitPal icon).
@@ -63,4 +78,9 @@ GitPal adds no configuration settings. Everything is automatic based on your wor
 
 ### 0.0.1
 
-Initial release. Supports plain-English repo queries, push/branch plans, ambiguous intent clarification, file picker, and beginner-safe guardrails.
+First public preview of GitPal, a beginner-friendly plain-English Git assistant for VS Code.
+
+- Helps users understand their repo state
+- Answers Git questions in plain English
+- Generates safe Git workflow plans
+- Avoids risky guesses with clarification flows

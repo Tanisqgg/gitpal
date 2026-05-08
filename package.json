@@ -30,11 +30,11 @@
   "license": "SEE LICENSE IN LICENSE",
   "repository": {
     "type": "git",
-    "url": "https://github.com/<your-username>/gitpal.git"
+    "url": "https://github.com/Tanisqgg/gitpal.git"
   },
-  "homepage": "https://github.com/<your-username>/gitpal#readme",
+  "homepage": "https://github.com/Tanisqgg/gitpal#readme",
   "bugs": {
-    "url": "https://github.com/<your-username>/gitpal/issues"
+    "url": "https://github.com/Tanisqgg/gitpal/issues"
   },
   "activationEvents": [
     "onCommand:gitpal.open",
