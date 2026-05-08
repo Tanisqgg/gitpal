@@ -1,14 +1,41 @@
 {
   "name": "gitpal",
-  "displayName": "gitpal",
-  "description": "Plain-English Git assistant with beginner-safe guardrails",
+  "displayName": "GitPal",
+  "description": "A beginner-friendly plain-English Git assistant for VS Code.",
   "version": "0.0.1",
+  "publisher": "nsw-marketplace",
   "engines": {
     "vscode": "^1.116.0"
   },
   "categories": [
+    "Education",
     "Other"
   ],
+  "keywords": [
+    "git",
+    "beginner",
+    "learning",
+    "version-control",
+    "assistant",
+    "vscode",
+    "workflow"
+  ],
+  "preview": true,
+  "pricing": "Free",
+  "icon": "media/gitpal-icon.png",
+  "galleryBanner": {
+    "color": "#1f2937",
+    "theme": "dark"
+  },
+  "license": "SEE LICENSE IN LICENSE",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/<your-username>/gitpal.git"
+  },
+  "homepage": "https://github.com/<your-username>/gitpal#readme",
+  "bugs": {
+    "url": "https://github.com/<your-username>/gitpal/issues"
+  },
   "activationEvents": [
     "onCommand:gitpal.open",
     "onView:gitpal.sidebar"
