@@ -310,7 +310,7 @@ function buildCreateAndPushPlan(
 					prompt: `Which file did you want to include in "${branch}"?`,
 					files: fileScope.matchedFiles.map((f) => ({
 						path: f.path,
-						followUpQuery: `create branch ${branch} and push only ${f.path}`
+						followUpQuery: `create a branch called ${branch} and push only ${f.path}`
 					}))
 				}
 				: undefined,

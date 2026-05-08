@@ -253,6 +253,373 @@ suite('GitPal core behavior', () => {
 			}
 		});
 	});
+
+	suite('clarification buttons', () => {
+		test('ambiguous plan includes clarificationOptions', () => {
+			const result = buildPlan({
+				kind: 'ambiguous',
+				action: 'ambiguous_add_to_branch',
+				branch: 'frontend',
+				targetFile: 'globals.css'
+			}, repoFixture());
+
+			assert.ok(Array.isArray(result.clarificationOptions));
+			assert.ok((result.clarificationOptions?.length ?? 0) >= 2);
+		});
+
+		test('clarificationOptions cover a stage-only action and a push action', () => {
+			const result = buildPlan({
+				kind: 'ambiguous',
+				action: 'ambiguous_add_to_branch',
+				branch: 'frontend',
+				targetFile: 'globals.css'
+			}, repoFixture());
+
+			const opts = result.clarificationOptions ?? [];
+			assert.ok(opts.some((o) => o.label.toLowerCase().includes('stage only')));
+			assert.ok(opts.some((o) => o.followUpQuery.includes('push')));
+		});
+
+		test('push-type clarification option follow-up query parses to an action intent', () => {
+			const result = buildPlan({
+				kind: 'ambiguous',
+				action: 'ambiguous_add_to_branch',
+				branch: 'frontend',
+				targetFile: 'globals.css'
+			}, repoFixture());
+
+			const pushOpt = (result.clarificationOptions ?? []).find((o) => o.followUpQuery.includes('push'));
+			assert.ok(pushOpt, 'expected a push-type clarification option');
+
+			const followUpIntent = parseIntent(pushOpt.followUpQuery);
+			assert.strictEqual(followUpIntent.kind, 'action');
+
+			const followUpPlan = buildPlan(followUpIntent, repoFixture());
+			assert.strictEqual(followUpPlan.kind, 'plan');
+		});
+
+		test('clarification option follow-up queries do not produce dangerous commands', () => {
+			const result = buildPlan({
+				kind: 'ambiguous',
+				action: 'ambiguous_add_to_branch',
+				branch: 'frontend',
+				targetFile: 'globals.css'
+			}, repoFixture());
+
+			const dangerousFragments = ['reset --hard', 'push --force', 'clean -fd', 'rebase -i'];
+
+			for (const opt of result.clarificationOptions ?? []) {
+				const followUpPlan = buildPlan(parseIntent(opt.followUpQuery), repoFixture());
+
+				for (const cmd of followUpPlan.commands) {
+					assert.ok(
+						!dangerousFragments.some((fragment) => cmd.command.includes(fragment)),
+						`Option "${opt.label}" produced a dangerous command: ${cmd.command}`
+					);
+				}
+			}
+		});
+	});
+
+	suite('changed-file picker', () => {
+		const twoGlobals = {
+			changedFiles: [
+				file('src/app/globals.css', 'M'),
+				file('styles/globals.css', 'M')
+			]
+		};
+
+		test('multiple file matches on push_branch produce a filePicker', () => {
+			const result = buildPlan(
+				{ kind: 'action', action: 'push_branch', branch: 'frontend', targetFile: 'globals.css' },
+				repoFixture(twoGlobals)
+			);
+
+			assert.strictEqual(result.kind, 'clarification');
+			assert.strictEqual(result.filePicker?.files.length, 2);
+			assert.ok(result.filePicker!.files.some((f) => f.path === 'src/app/globals.css'));
+			assert.ok(result.filePicker!.files.some((f) => f.path === 'styles/globals.css'));
+		});
+
+		test('multiple file matches on create_and_push_branch produce a filePicker', () => {
+			const result = buildPlan(
+				{ kind: 'action', action: 'create_and_push_branch', branch: 'feature', targetFile: 'globals.css' },
+				repoFixture(twoGlobals)
+			);
+
+			assert.strictEqual(result.kind, 'clarification');
+			assert.strictEqual(result.filePicker?.files.length, 2);
+		});
+
+		test('filePicker entries embed the exact file path in their follow-up query', () => {
+			const result = buildPlan(
+				{ kind: 'action', action: 'push_branch', branch: 'frontend', targetFile: 'globals.css' },
+				repoFixture(twoGlobals)
+			);
+
+			for (const entry of result.filePicker?.files ?? []) {
+				assert.ok(
+					entry.followUpQuery.includes(entry.path),
+					`Follow-up query "${entry.followUpQuery}" should contain path "${entry.path}"`
+				);
+			}
+		});
+
+		test('push_branch file picker follow-up queries resolve to specific file plans', () => {
+			const result = buildPlan(
+				{ kind: 'action', action: 'push_branch', branch: 'frontend', targetFile: 'globals.css' },
+				repoFixture(twoGlobals)
+			);
+
+			for (const entry of result.filePicker?.files ?? []) {
+				const followUpIntent = parseIntent(entry.followUpQuery);
+				assert.strictEqual(followUpIntent.kind, 'action', `"${entry.followUpQuery}" should parse as action`);
+
+				const followUpPlan = buildPlan(followUpIntent, repoFixture({ changedFiles: [file(entry.path, 'M')] }));
+				assert.strictEqual(followUpPlan.kind, 'plan');
+				assert.ok(
+					followUpPlan.commands.some((c) => c.command.includes(entry.path)),
+					`Plan should stage "${entry.path}"`
+				);
+			}
+		});
+
+		test('create_and_push_branch file picker follow-up queries resolve to specific file plans', () => {
+			const result = buildPlan(
+				{ kind: 'action', action: 'create_and_push_branch', branch: 'feature', targetFile: 'globals.css' },
+				repoFixture(twoGlobals)
+			);
+
+			for (const entry of result.filePicker?.files ?? []) {
+				const followUpIntent = parseIntent(entry.followUpQuery);
+				assert.strictEqual(followUpIntent.kind, 'action', `"${entry.followUpQuery}" should parse as action`);
+
+				const followUpPlan = buildPlan(followUpIntent, repoFixture({ changedFiles: [file(entry.path, 'M')] }));
+				assert.strictEqual(followUpPlan.kind, 'plan');
+				assert.ok(
+					followUpPlan.commands.some((c) => c.command.includes(entry.path)),
+					`Plan should reference "${entry.path}"`
+				);
+			}
+		});
+
+		test('single file match does not produce a filePicker', () => {
+			const result = buildPlan(
+				{ kind: 'action', action: 'push_branch', branch: 'frontend', targetFile: 'globals.css' },
+				repoFixture()
+			);
+
+			assert.strictEqual(result.kind, 'plan');
+			assert.strictEqual(result.filePicker, undefined);
+		});
+
+		test('file picker follow-up queries do not produce dangerous commands', () => {
+			const result = buildPlan(
+				{ kind: 'action', action: 'push_branch', branch: 'frontend', targetFile: 'globals.css' },
+				repoFixture(twoGlobals)
+			);
+
+			const dangerousFragments = ['reset --hard', 'push --force', 'clean -fd', 'rebase -i'];
+
+			for (const entry of result.filePicker?.files ?? []) {
+				const followUpPlan = buildPlan(
+					parseIntent(entry.followUpQuery),
+					repoFixture({ changedFiles: [file(entry.path, 'M')] })
+				);
+
+				for (const cmd of followUpPlan.commands) {
+					assert.ok(
+						!dangerousFragments.some((fragment) => cmd.command.includes(fragment)),
+						`File picker "${entry.path}" follow-up produced a dangerous command: ${cmd.command}`
+					);
+				}
+			}
+		});
+	});
+
+	suite('next-step suggestions', () => {
+		const cases: Array<{ label: string; query: RepoQueryKind; overrides: Partial<RepoInspection>; mustInclude: string[] }> = [
+			{
+				label: 'staged_files with staged files returns commit and unstage options',
+				query: 'staged_files',
+				overrides: {},
+				mustInclude: ['Commit staged files']
+			},
+			{
+				label: 'staged_files with no staged files returns stage option',
+				query: 'staged_files',
+				overrides: {
+					status: {
+						staged: [],
+						unstaged: [file('src/file.ts', 'M')],
+						untracked: [],
+						deleted: [],
+						conflicted: []
+					}
+				},
+				mustInclude: ['Stage a file']
+			},
+			{
+				label: 'changed_files returns a stage option',
+				query: 'changed_files',
+				overrides: {},
+				mustInclude: ['Stage a file']
+			},
+			{
+				label: 'untracked_files returns a stage option',
+				query: 'untracked_files',
+				overrides: {},
+				mustInclude: ['Stage a file']
+			},
+			{
+				label: 'deleted_files with deleted files returns a commit option',
+				query: 'deleted_files',
+				overrides: {},
+				mustInclude: ['Commit staged files']
+			},
+			{
+				label: 'current_branch returns show-changed and push options',
+				query: 'current_branch',
+				overrides: {},
+				mustInclude: ['Show what changed', 'Push to this branch']
+			},
+			{
+				label: 'clean repo returns a safe fallback suggestion',
+				query: 'changed_files',
+				overrides: { changedFiles: [] },
+				mustInclude: ['Show git status']
+			}
+		];
+
+		for (const tc of cases) {
+			test(tc.label, () => {
+				const result = buildPlan(
+					{ kind: 'query', action: 'repo_query', query: tc.query },
+					repoFixture(tc.overrides)
+				);
+
+				const steps = result.repoAnswer?.suggestedNextSteps ?? [];
+
+				for (const expected of tc.mustInclude) {
+					assert.ok(
+						steps.includes(expected),
+						`Expected "${expected}" in next steps but got: [${steps.join(', ')}]`
+					);
+				}
+			});
+		}
+	});
+
+	suite('beginner wording', () => {
+		test('unknown intent uses a beginner-friendly summary', () => {
+			const result = buildPlan({ kind: 'unknown', action: 'unknown' }, repoFixture());
+			assert.strictEqual(result.summary, "I'm not sure which Git action you want yet.");
+		});
+
+		test('ambiguous add uses a beginner-friendly summary', () => {
+			const result = buildPlan({
+				kind: 'ambiguous',
+				action: 'ambiguous_add_to_branch',
+				branch: 'frontend',
+				targetFile: 'globals.css'
+			}, repoFixture());
+			assert.strictEqual(result.summary, 'This could mean more than one Git workflow.');
+		});
+
+		test('file picker clarification uses a beginner-friendly summary', () => {
+			const result = buildPlan(
+				{ kind: 'action', action: 'push_branch', branch: 'frontend', targetFile: 'globals.css' },
+				repoFixture({
+					changedFiles: [
+						file('src/app/globals.css', 'M'),
+						file('styles/globals.css', 'M')
+					]
+				})
+			);
+			assert.ok(
+				!result.summary.toLowerCase().includes('need a clearer'),
+				'Summary should not use jargony phrasing'
+			);
+			assert.ok(result.summary.length > 0);
+		});
+	});
+
+	suite('edge cases', () => {
+		test('detached HEAD state is mentioned in branch findings', () => {
+			const result = buildPlan(
+				{ kind: 'query', action: 'repo_query', query: 'current_branch' },
+				repoFixture({
+					branchState: { current: undefined, upstream: undefined, ahead: 0, behind: 0, isDetached: true },
+					currentBranch: undefined
+				})
+			);
+
+			assert.ok(
+				result.repoAnswer?.whatIFound.some((line) => line.toLowerCase().includes('detached')),
+				'Expected detached HEAD to be mentioned'
+			);
+		});
+
+		test('branch with no upstream reports that no upstream was detected', () => {
+			const result = buildPlan(
+				{ kind: 'query', action: 'repo_query', query: 'current_branch' },
+				repoFixture({
+					branchState: { current: 'feature', upstream: undefined, ahead: 0, behind: 0, isDetached: false }
+				})
+			);
+
+			assert.ok(
+				result.repoAnswer?.whatIFound.some((line) => line.toLowerCase().includes('no upstream')),
+				'Expected no-upstream message'
+			);
+		});
+
+		test('commit_and_push_branch generates a commit with the provided message and a push', () => {
+			const result = buildPlan({
+				kind: 'action',
+				action: 'commit_and_push_branch',
+				branch: 'main',
+				commitMessage: 'update readme'
+			}, repoFixture());
+
+			assert.strictEqual(result.kind, 'plan');
+			assert.ok(commandTexts(result).some((c) => c.includes('git commit')));
+			assert.ok(commandTexts(result).some((c) => c.includes('git push')));
+			assert.ok(
+				commandTexts(result).some((c) => c.includes('update readme')),
+				'Expected commit message to appear in commit command'
+			);
+		});
+
+		test('non-git repo with action request produces a safe result', () => {
+			const result = buildPlan(
+				{ kind: 'action', action: 'push_branch', branch: 'main' },
+				nonGitRepoFixture()
+			);
+
+			assert.ok(['plan', 'clarification'].includes(result.kind));
+
+			const dangerousFragments = ['reset --hard', 'push --force', 'clean -fd', 'rebase -i'];
+
+			for (const cmd of result.commands) {
+				assert.ok(
+					!dangerousFragments.some((fragment) => cmd.command.includes(fragment)),
+					`Non-git repo plan produced a dangerous command: ${cmd.command}`
+				);
+			}
+		});
+
+		test('clean repo next steps contain only one safe suggestion', () => {
+			const result = buildPlan(
+				{ kind: 'query', action: 'repo_query', query: 'changed_files' },
+				repoFixture({ changedFiles: [] })
+			);
+
+			const steps = result.repoAnswer?.suggestedNextSteps ?? [];
+			assert.ok(steps.length > 0, 'Expected at least one next-step suggestion');
+			assert.ok(steps.includes('Show git status'));
+		});
+	});
 });
 
 function repoFixture(overrides: Partial<RepoInspection> = {}): RepoInspection {
