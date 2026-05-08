@@ -1,71 +1,66 @@
-# gitpal README
+# GitPal
 
-This is the README for your extension "gitpal". After writing up a brief description, we recommend including the following sections.
+A VS Code extension that lets you describe Git actions in plain English. GitPal interprets what you want to do, inspects your repository state, and gives you either a ready-to-run command plan or a beginner-friendly explanation — without ever generating dangerous commands.
 
 ## Features
 
-Describe specific features of your extension including screenshots of your extension in action. Image paths are relative to this README file.
+**Ask questions about your repo**
+> "What branch am I on?" · "Which files are staged?" · "Do I have conflicts?" · "Am I ahead or behind origin?"
 
-For example if there is an image subfolder under your extension project workspace:
+GitPal reads your actual `git status` and answers in plain English. No commands are generated for read-only questions.
 
-\!\[feature X\]\(images/feature-x.png\)
+**Request Git actions**
+> "Push this code to the main branch" · "Create a branch called frontend and push my code" · "Push only globals.css to the frontend branch"
 
-> Tip: Many popular extensions utilize animations. This is an excellent way to show off your extension! We recommend short, focused animations that are easy to follow.
+GitPal builds a step-by-step command plan (`git switch`, `git add`, `git commit`, `git push`) using your real changed files. File-specific requests use the exact matched path — never `git add .`.
+
+**Handles ambiguity safely**
+> "Help me add globals.css to the frontend branch" · "Save my work"
+
+When a request could mean more than one Git workflow, GitPal shows a clarification card with clickable option buttons instead of guessing.
+
+**File picker for duplicate basenames**
+If you ask to push `globals.css` but two changed files share that name, GitPal shows both full paths as buttons. Clicking one generates a plan for that exact file.
+
+**Safety guardrails**
+- Destructive commands (`reset --hard`, `push --force`, `clean -fd`, `rebase -i`) are never generated.
+- "Run in Terminal" only appears on commands GitPal has explicitly marked safe (`git status`, `git add <specific-file>`).
+- Once a new plan is generated, buttons from the previous plan are gone and cannot be re-run.
+
+## Usage
+
+1. Open the GitPal panel from the activity bar (the GitPal icon).
+2. Type what you want to do in plain English and press Enter.
+3. Read the result card:
+   - **Green border** — answer card. Shows what GitPal found in your repo plus "Try next" suggestion pills.
+   - **Blue border** — plan card. Shows the commands GitPal would run, with "Run in Terminal" buttons on safe steps.
+   - **Yellow border** — clarification card. Shows option buttons or a file picker to help GitPal understand your intent.
+4. Click any pill, option button, or file picker entry to pre-fill the input and generate a follow-up plan.
 
 ## Requirements
 
-If you have any requirements or dependencies, add a section describing those and how to install and configure them.
+- VS Code 1.116 or later
+- A Git repository open in your workspace (GitPal works without one but will note that it cannot inspect the repo)
+
+## Running Tests
+
+```
+npm test
+```
+
+Runs the automated unit test suite covering intent parsing, plan building, file matching, safety guardrails, and next-step suggestions. See [TESTING.md](TESTING.md) for the full test matrix and manual QA checklist.
 
 ## Extension Settings
 
-Include if your extension adds any VS Code settings through the `contributes.configuration` extension point.
-
-For example:
-
-This extension contributes the following settings:
-
-* `myExtension.enable`: Enable/disable this extension.
-* `myExtension.thing`: Set to `blah` to do something.
+GitPal adds no configuration settings. Everything is automatic based on your workspace's Git state.
 
 ## Known Issues
 
-Calling out known issues can help limit users opening duplicate issues against your extension.
+- Webview rendering, button click round-trips, and the LLM fallback path have no automated test coverage. See [TESTING.md](TESTING.md) for details.
+- Windows paths with spaces or non-ASCII characters in file names are not fully tested.
 
 ## Release Notes
 
-Users appreciate release notes as you update your extension.
+### 0.0.1
 
-### 1.0.0
-
-Initial release of ...
-
-### 1.0.1
-
-Fixed issue #.
-
-### 1.1.0
-
-Added features X, Y, and Z.
-
----
-
-## Following extension guidelines
-
-Ensure that you've read through the extensions guidelines and follow the best practices for creating your extension.
-
-* [Extension Guidelines](https://code.visualstudio.com/api/references/extension-guidelines)
-
-## Working with Markdown
-
-You can author your README using Visual Studio Code. Here are some useful editor keyboard shortcuts:
-
-* Split the editor (`Cmd+\` on macOS or `Ctrl+\` on Windows and Linux).
-* Toggle preview (`Shift+Cmd+V` on macOS or `Shift+Ctrl+V` on Windows and Linux).
-* Press `Ctrl+Space` (Windows, Linux, macOS) to see a list of Markdown snippets.
-
-## For more information
-
-* [Visual Studio Code's Markdown Support](http://code.visualstudio.com/docs/languages/markdown)
-* [Markdown Syntax Reference](https://help.github.com/articles/markdown-basics/)
-
-**Enjoy!**
+Initial release. Supports plain-English repo queries, push/branch plans, ambiguous intent clarification, file picker, and beginner-safe guardrails.
