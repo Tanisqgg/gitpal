@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="GitPal is a beginner-friendly, plain-English Git assistant for VS Code that helps students understand repo state, plan safe workflows, and learn terminal Git with confidence."
+    />
+    <title>GitPal - Learn Git with confidence</title>
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+
+    <div class="announcement" role="note">
+      <div class="container announcement-inner">
+        <span>Built for students learning real terminal Git</span>
+        <a href="#download">Download the VSIX</a>
+      </div>
+    </div>
+
+    <header class="site-header" id="top">
+      <div class="container header-inner">
+        <a class="logo" href="#top" aria-label="GitPal home">
+          <span class="logo-mark" aria-hidden="true">gp</span>
+          <span class="logo-text">GitPal</span>
+        </a>
+
+        <button
+          class="nav-toggle"
+          type="button"
+          aria-expanded="false"
+          aria-controls="primary-nav"
+          id="nav-toggle"
+        >
+          <span class="nav-toggle-bar" aria-hidden="true"></span>
+          <span class="nav-toggle-bar" aria-hidden="true"></span>
+          <span class="nav-toggle-bar" aria-hidden="true"></span>
+          <span class="visually-hidden">Menu</span>
+        </button>
+
+        <nav class="nav" id="primary-nav" aria-label="Primary">
+          <ul class="nav-list">
+            <li><a href="#problem">Problem</a></li>
+            <li><a href="#why">Why GitPal</a></li>
+            <li><a href="#moments">Product</a></li>
+            <li><a href="#terminal">Terminal Git</a></li>
+            <li><a href="#install">Install</a></li>
+            <li><a href="#faq">FAQ</a></li>
+            <li><a class="btn btn-small btn-primary nav-cta" href="#download">Download</a></li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+
+    <main id="main">
+      <section class="hero" aria-labelledby="hero-title">
+        <div class="hero-stage" aria-hidden="true"></div>
+        <div class="container hero-grid">
+          <div class="hero-copy">
+            <p class="eyebrow">Plain-English Git help for VS Code</p>
+            <h1 id="hero-title">Learn Git with confidence, not panic.</h1>
+            <p class="lead">
+              GitPal helps students understand repo state, plan safe workflows, and learn the terminal
+              commands behind each step. Ask in plain English. Get clarity before you change your work.
+            </p>
+            <div class="hero-actions" aria-label="Primary actions">
+              <a class="btn btn-primary" href="#download">Download VSIX</a>
+              <a class="btn btn-secondary" href="#moments">Watch the workflow</a>
+            </div>
+            <div class="trust-row" aria-label="GitPal highlights">
+              <span>Beginner-safe guidance</span>
+              <span>Explains before it suggests</span>
+              <span>Built for terminal Git learning</span>
+            </div>
+          </div>
+
+          <div class="hero-product" aria-label="GitPal product preview">
+            <div class="floating-proof proof-left" aria-hidden="true">
+              <span>Risk check</span>
+              <strong>clarify first</strong>
+            </div>
+            <div class="floating-proof proof-right" aria-hidden="true">
+              <span>Repo state</span>
+              <strong>2 staged</strong>
+            </div>
+
+            <div class="vs-code-window">
+              <div class="window-bar">
+                <div class="window-dots" aria-hidden="true">
+                  <span></span>
+                  <span></span>
+                  <span></span>
+                </div>
+                <span>GitPal Assistant</span>
+                <small>coursework-final</small>
+              </div>
+              <div class="window-layout">
+                <aside class="activity-rail" aria-label="VS Code navigation preview">
+                  <span></span>
+                  <span></span>
+                  <span class="active"></span>
+                  <span></span>
+                </aside>
+                <div class="repo-sidebar">
+                  <h2>Repository</h2>
+                  <div class="repo-row good">
+                    <span>Branch</span>
+                    <strong>frontend</strong>
+                  </div>
+                  <div class="repo-row">
+                    <span>Staged</span>
+                    <strong>globals.css</strong>
+                  </div>
+                  <div class="repo-row muted">
+                    <span>Unstaged</span>
+                    <strong>README.md</strong>
+                  </div>
+                  <div class="repo-row muted">
+                    <span>Remote</span>
+                    <strong>origin/frontend</strong>
+                  </div>
+                </div>
+                <div class="assistant-panel">
+                  <div class="prompt user-prompt">
+                    <span>You</span>
+                    <p>push only globals.css to frontend branch</p>
+                  </div>
+                  <div class="prompt assistant-response">
+                    <span>GitPal</span>
+                    <p>
+                      I will keep this scoped to one file. First, confirm the branch and staged files,
+                      then commit and push only that change.
+                    </p>
+                    <ol>
+                      <li>Check <code>git status --short</code>.</li>
+                      <li>Stage only <code>src/styles/globals.css</code>.</li>
+                      <li>Commit with a focused message.</li>
+                      <li>Push <code>frontend</code> to origin.</li>
+                    </ol>
+                  </div>
+                  <div class="clarify-card">
+                    <strong>Clarification:</strong>
+                    <span>Do you want to copy the file, move a commit, or switch branches first?</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="metric-strip" aria-label="GitPal benefits">
+        <div class="container metric-grid">
+          <div>
+            <strong>Plain English</strong>
+            <span>Ask Git questions the way you think about them.</span>
+          </div>
+          <div>
+            <strong>Safe plans</strong>
+            <span>See checks before commands that change repo state.</span>
+          </div>
+          <div>
+            <strong>Terminal confidence</strong>
+            <span>Learn what commands do instead of memorizing recipes.</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="section problem-section" id="problem" aria-labelledby="problem-title">
+        <div class="container editorial-grid">
+          <div class="section-copy sticky-copy">
+            <p class="eyebrow">The beginner Git problem</p>
+            <h2 id="problem-title">Git gets stressful when every command feels like it might touch the wrong file.</h2>
+            <p>
+              Students often know the goal: submit the assignment, push one file, recover from an error,
+              or understand why VS Code says something is staged. The hard part is translating that goal
+              into Git's model without making a risky guess.
+            </p>
+          </div>
+          <div class="story-stack">
+            <article class="story-card danger">
+              <span>Before</span>
+              <h3>"I need to push this one CSS file, but I have other changes too."</h3>
+              <p>Git commands feel connected to hidden state: branch, staging, commits, remotes, and files you did not mean to include.</p>
+            </article>
+            <article class="story-card calm">
+              <span>After GitPal</span>
+              <h3>"Here is what is staged. Here is the command. Here is why it is safe."</h3>
+              <p>GitPal slows the workflow down just enough to explain the state and keep the next action scoped.</p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section why-section" id="why" aria-labelledby="why-title">
+        <div class="container">
+          <div class="section-heading-row">
+            <div>
+              <p class="eyebrow">Why GitPal helps</p>
+              <h2 id="why-title">Designed like a tutor for the moments when Git stops making sense.</h2>
+            </div>
+            <a class="text-cta" href="#download">Get GitPal for VS Code</a>
+          </div>
+
+          <div class="benefit-grid">
+            <article class="benefit-card large">
+              <span class="benefit-number">01</span>
+              <h3>It starts with understanding repo state.</h3>
+              <p>
+                GitPal explains staged, unstaged, untracked, ahead, behind, and branch state in language
+                that maps back to what students see in VS Code and the terminal.
+              </p>
+            </article>
+            <article class="benefit-card">
+              <span class="benefit-number">02</span>
+              <h3>It asks before risky assumptions.</h3>
+              <p>Ambiguous requests trigger clarification instead of a confident answer that might move the wrong work.</p>
+            </article>
+            <article class="benefit-card">
+              <span class="benefit-number">03</span>
+              <h3>It teaches the command.</h3>
+              <p>Plans include the why behind commands, so terminal Git becomes less mysterious over time.</p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section student-section" id="students" aria-labelledby="students-title">
+        <div class="container editorial-grid reverse">
+          <div class="student-board">
+            <div class="board-card">
+              <span>Lab submission</span>
+              <strong>What will I commit?</strong>
+            </div>
+            <div class="board-card">
+              <span>Group project</span>
+              <strong>Which branch am I on?</strong>
+            </div>
+            <div class="board-card">
+              <span>Late-night bug</span>
+              <strong>Why did push fail?</strong>
+            </div>
+            <div class="board-card">
+              <span>First internship</span>
+              <strong>How do I avoid breaking main?</strong>
+            </div>
+          </div>
+          <div class="section-copy">
+            <p class="eyebrow">Student-focused by design</p>
+            <h2 id="students-title">For coursework pressure, first repos, group projects, and learning Git the real way.</h2>
+            <p>
+              GitPal is not a toy and not a black box. It gives students enough context to act, enough
+              caution to avoid preventable mistakes, and enough explanation to build durable confidence.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section class="section moments-section" id="moments" aria-labelledby="moments-title">
+        <div class="container">
+          <header class="section-header centered">
+            <p class="eyebrow">Product moments</p>
+            <h2 id="moments-title">Answer, plan, or clarify. GitPal chooses the safer shape.</h2>
+            <p class="section-sub">
+              The product should feel useful before someone installs it, so the site shows the exact kind
+              of Git questions students can ask.
+            </p>
+          </header>
+
+          <div class="moment-grid">
+            <article class="moment-card">
+              <div class="moment-topline">
+                <span class="pill answer">Answer</span>
+                <small>repo state</small>
+              </div>
+              <h3>which files are staged?</h3>
+              <div class="mock-answer">
+                <p><strong>Staged right now:</strong></p>
+                <ul>
+                  <li><code>src/styles/globals.css</code></li>
+                  <li><code>src/components/Header.tsx</code></li>
+                </ul>
+                <p>These are the files that would be included if you committed now.</p>
+              </div>
+            </article>
+
+            <article class="moment-card featured">
+              <div class="moment-topline">
+                <span class="pill plan">Safe plan</span>
+                <small>scoped workflow</small>
+              </div>
+              <h3>push only globals.css to frontend branch</h3>
+              <div class="mock-answer">
+                <ol>
+                  <li>Confirm you are on <code>frontend</code>.</li>
+                  <li>Run <code>git status --short</code>.</li>
+                  <li>Stage only <code>globals.css</code>.</li>
+                  <li>Commit and push the branch.</li>
+                </ol>
+                <p>GitPal explains the impact before you run each command.</p>
+              </div>
+            </article>
+
+            <article class="moment-card">
+              <div class="moment-topline">
+                <span class="pill clarify">Clarify</span>
+                <small>ambiguous intent</small>
+              </div>
+              <h3>help me add globals.css to frontend branch</h3>
+              <div class="mock-answer">
+                <p>Quick check: do you want to:</p>
+                <ul>
+                  <li>switch to <code>frontend</code> and edit there,</li>
+                  <li>copy the file from another branch, or</li>
+                  <li>move an existing commit?</li>
+                </ul>
+              </div>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section terminal-section" id="terminal" aria-labelledby="terminal-title">
+        <div class="container terminal-layout">
+          <div class="terminal-window" aria-label="Terminal learning preview">
+            <div class="terminal-bar">
+              <span></span>
+              <strong>terminal</strong>
+            </div>
+            <pre><code>$ git status --short
+M README.md
+A src/styles/globals.css
+
+# GitPal explains:
+# A means staged for commit.
+# M means modified but not staged.
+# Commit now would include globals.css only.</code></pre>
+          </div>
+          <div class="section-copy">
+            <p class="eyebrow">Terminal learning value</p>
+            <h2 id="terminal-title">GitPal teaches the command line instead of hiding it.</h2>
+            <p>
+              Students still learn real Git. GitPal connects plain-English goals to terminal commands,
+              explains the output, and helps users understand when a command is safe, scoped, or risky.
+            </p>
+            <a class="btn btn-secondary" href="#moments">See prompt examples</a>
+          </div>
+        </div>
+      </section>
+
+      <section class="section download-section" id="download" aria-labelledby="install-title">
+        <div class="container download-card">
+          <div class="download-main">
+            <p class="eyebrow">Install in minutes</p>
+            <h2 id="install-title">Download GitPal, install the VSIX, and open it inside a Git repo.</h2>
+            <p>
+              No backend for this website. No complicated setup. GitPal is packaged as a VS Code
+              extension and this page stays simple enough for GitHub Pages.
+            </p>
+            <div class="download-actions">
+              <a class="btn btn-primary" href="https://github.com/tanisqgg/gitpal/releases" id="release-link">
+                Open GitHub Releases
+              </a>
+              <a class="btn btn-secondary" href="https://github.com/tanisqgg/gitpal#readme">Read docs</a>
+            </div>
+          </div>
+
+          <div class="install-steps" id="install" aria-label="Install steps">
+            <div class="install-step">
+              <span>01</span>
+              <p>Download the latest <code>.vsix</code> from the release page.</p>
+            </div>
+            <div class="install-step">
+              <span>02</span>
+              <p>Open VS Code, go to Extensions, then choose <strong>Install from VSIX...</strong></p>
+            </div>
+            <div class="install-step">
+              <span>03</span>
+              <p>Select the file, open a Git repository, and run <strong>GitPal: Open</strong>.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section faq-section" id="faq" aria-labelledby="faq-title">
+        <div class="container faq-layout">
+          <div class="section-copy">
+            <p class="eyebrow">FAQ</p>
+            <h2 id="faq-title">Questions students and instructors will ask first.</h2>
+            <p>
+              Keep the answers direct. GitPal should feel practical, safe, and understandable before
+              someone installs it.
+            </p>
+          </div>
+
+          <div class="accordion" data-accordion>
+            <div class="accordion-item">
+              <button class="accordion-trigger" type="button" aria-expanded="false" id="faq-1">
+                Is GitPal free?
+                <span class="accordion-icon" aria-hidden="true"></span>
+              </button>
+              <div class="accordion-panel" role="region" aria-labelledby="faq-1" hidden>
+                <p>Yes. GitPal is intended to be free to use. Check the GitHub repository license for exact project terms.</p>
+              </div>
+            </div>
+
+            <div class="accordion-item">
+              <button class="accordion-trigger" type="button" aria-expanded="false" id="faq-2">
+                Does GitPal teach Git or automate it?
+                <span class="accordion-icon" aria-hidden="true"></span>
+              </button>
+              <div class="accordion-panel" role="region" aria-labelledby="faq-2" hidden>
+                <p>It is positioned as a learning companion. GitPal explains repo state, commands, and workflow choices so students understand what they are doing.</p>
+              </div>
+            </div>
+
+            <div class="accordion-item">
+              <button class="accordion-trigger" type="button" aria-expanded="false" id="faq-3">
+                Is GitPal safe for beginners?
+                <span class="accordion-icon" aria-hidden="true"></span>
+              </button>
+              <div class="accordion-panel" role="region" aria-labelledby="faq-3" hidden>
+                <p>GitPal emphasizes clarification and safe plans before risky or ambiguous workflows. Users should still review suggested commands before changing repo state.</p>
+              </div>
+            </div>
+
+            <div class="accordion-item">
+              <button class="accordion-trigger" type="button" aria-expanded="false" id="faq-4">
+                Do I need GitHub Copilot?
+                <span class="accordion-icon" aria-hidden="true"></span>
+              </button>
+              <div class="accordion-panel" role="region" aria-labelledby="faq-4" hidden>
+                <p>No. GitPal is its own assistant experience inside VS Code. Copilot is optional and not required.</p>
+              </div>
+            </div>
+
+            <div class="accordion-item">
+              <button class="accordion-trigger" type="button" aria-expanded="false" id="faq-5">
+                How do VSIX updates work?
+                <span class="accordion-icon" aria-hidden="true"></span>
+              </button>
+              <div class="accordion-panel" role="region" aria-labelledby="faq-5" hidden>
+                <p>Download the newest <code>.vsix</code> from Releases and install it again with <strong>Install from VSIX...</strong>. VS Code typically upgrades the extension in place.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="container footer-cta">
+        <h2>Ready to make Git less intimidating?</h2>
+        <a class="btn btn-primary" href="https://github.com/tanisqgg/gitpal/releases">Download GitPal</a>
+      </div>
+
+      <div class="container footer-grid">
+        <div class="footer-brand">
+          <span class="logo-mark logo-mark-inline" aria-hidden="true">gp</span>
+          <strong>GitPal</strong>
+          <p>A beginner-safe, plain-English Git learning companion for VS Code.</p>
+        </div>
+        <div class="footer-links">
+          <h3>Project</h3>
+          <ul>
+            <li><a href="https://github.com/tanisqgg/gitpal">GitHub repository</a></li>
+            <li><a href="https://github.com/tanisqgg/gitpal/releases">Latest release</a></li>
+            <li><a href="https://github.com/tanisqgg/gitpal#readme">Docs / help</a></li>
+            <li><a href="https://github.com/tanisqgg/gitpal/issues">Issues</a></li>
+          </ul>
+        </div>
+        <div class="footer-links">
+          <h3>Page</h3>
+          <ul>
+            <li><a href="#problem">Problem</a></li>
+            <li><a href="#moments">Product moments</a></li>
+            <li><a href="#install">Install</a></li>
+            <li><a href="#faq">FAQ</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="container footer-bottom">
+        <p>&copy; <span id="year"></span> GitPal. Replace this attribution before publishing if needed.</p>
+      </div>
+    </footer>
+
+    <script src="script.js" defer></script>
+  </body>
+</html>
